@@ -1,24 +1,36 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import Autocomplete from './components/Autocomplete';
+import { useState } from 'react';
+
+type Option = string;
+const options: Option[] = [
+  "Africa",
+  "Antarctica",
+  "Asia",
+  "Europe",
+  "North America",
+  "Australia",
+  "South America"
+];
 
 function App() {
+  const [selectedOption, setSelectedOption] = useState<Option | null>(null);
+  const [isDisabled, setDisable] = useState<boolean>(false);
+
+  function handleChange(option: Option | null) {
+    setSelectedOption(option);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Autocomplete
+        label='Search for continents: '
+        options={options}
+        onChange={handleChange}
+        disabled={isDisabled}
+      />
+      <div>
+      </div>
     </div>
   );
 }
