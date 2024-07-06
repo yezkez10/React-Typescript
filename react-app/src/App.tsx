@@ -9,6 +9,8 @@ const options: Option[] = [
 
 function App() {
   const [selectedOption, setSelectedOption] = useState<Option | null>(null);
+  const [isDisabled, setDisable] = useState<boolean>(false);
+
   function handleChange(option: Option | null) {
     setSelectedOption(option);
   };
@@ -16,10 +18,13 @@ function App() {
   return (
     <div className="App">
       <Autocomplete
-        label='Fruits'
+        label='Search: '
         options={options}
-        onChange={handleChange}/>
-        
+        onChange={handleChange}
+        disabled={isDisabled}
+      />
+      <div>
+      </div>
     </div>
   );
 }
