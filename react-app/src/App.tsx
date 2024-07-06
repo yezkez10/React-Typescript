@@ -4,8 +4,14 @@ import { useState } from 'react';
 
 type Option = string;
 const options: Option[] = [
-  'Apple', 'Banana', 'Grape', 'Strawberry'
-]
+  "Africa",
+  "Antarctica",
+  "Asia",
+  "Europe",
+  "North America",
+  "Australia",
+  "South America"
+];
 
 function App() {
   const [selectedOption, setSelectedOption] = useState<Option | null>(null);
@@ -18,7 +24,7 @@ function App() {
   return (
     <div className="App">
       <Autocomplete
-        label='Search: '
+        label='Search for continents: '
         options={options}
         onChange={handleChange}
         disabled={isDisabled}

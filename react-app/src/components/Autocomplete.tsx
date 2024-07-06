@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useRef, useState } from "react";
+import React, { ChangeEvent, KeyboardEvent, useRef, useState } from "react";
 import './Autocomplete.css';
 
 type Option = string;
@@ -20,6 +20,33 @@ function Autocomplete({label, options, onChange, onInputChange, disabled}: Autoc
     //show options upon clicking on input
     function handleInputClick() {
         setShowOptions(true);
+    };
+
+    const [highlightedID, setHighlightedID] = useState<number>(-1);
+    function resetID() {
+        setHighlightedID(-1);
+    }
+    //allowing keyboard controls
+    function handleKeys(event: KeyboardEvent<HTMLInputElement>) {
+        if (!showOptions || filteredOptions.length === 0) return;
+        switch (event.key) {
+            case 'ArrowDown':
+                setHighlightedID(prev => prev < filteredOptions.length - 1 ? prev + 1 : 0);
+                //if not yet reached end of list, keep going down. else restart at index 0
+                break;
+            case 'ArrowUp':
+                setHighlightedID(prev => prev > 0 ? prev - 1 : filteredOptions.length - 1)
+                break;
+            case 'Enter':
+                if (highlightedID >= 0) {
+                    const chosenOption = filteredOptions[highlightedID];
+                    handleOptionClick(chosenOption);
+                    resetID();
+                }
+                break;
+            default:
+                break;
+        }
     };
 
     //for mouse event ie clicking outside
@@ -56,6 +83,7 @@ function Autocomplete({label, options, onChange, onInputChange, disabled}: Autoc
         const filteredList = options.filter(option => 
             option.toLowerCase().includes(value.toLowerCase()));
         setFilteredOptions(filteredList);
+        resetID();
     };
 
     const [selectedOption, setSelectedOption] = useState<Option | null>(null);
@@ -79,28 +107,30 @@ function Autocomplete({label, options, onChange, onInputChange, disabled}: Autoc
     };
     
     return (
-        <div className="autocomplete-container">           
+        <div className="autocomplete">           
             <label className="autocomplete-label">{label}</label>
-            <input
-            className="autocomplete-input"
-            type="text"
-            value={inputValue}
-            onChange={handleInputChange}
-            placeholder="Search"
-            disabled={disabled}
-            onClick={handleInputClick}
-            ref={inputRef}
-            />
-            <button onClick={clear}> X </button>
+            <div className="autocomplete-container">
+                <input
+                    className="autocomplete-input"
+                    type="text"
+                    value={inputValue}
+                    onChange={handleInputChange}
+                    placeholder="Search"
+                    disabled={disabled}
+                    onClick={handleInputClick}
+                    ref={inputRef}
+                    onKeyDown={handleKeys}
+                    />
+                <button onClick={clear}> X </button>
+            </div>
             {showOptions && 
-                <ul 
-                    ref={optionsRef} 
+                <ul ref={optionsRef} 
                     className="autocomplete-options">
-                    {filteredOptions.map(option => (
+                    {filteredOptions.map((option, index) => (
                         <li 
                             key={option} 
                             onClick={()=> handleOptionClick(option)}
-                            className="autocomplete-option">
+                            className={`autocomplete-option ${highlightedID === index ? 'highlighted' : ''}`}>
                             {option}
                         </li>
                     ))}
