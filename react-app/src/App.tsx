@@ -25,6 +25,7 @@ function App() {
     <div className="App">
       <Autocomplete
         label='Search for continents: '
+        description='With default display and indexed search'
         options={options}
         onChange={handleChange}
         disabled={isDisabled}

@@ -5,6 +5,7 @@ type Option = string;
 
 type AutocompleteProps = {
     label: string;
+    description: string;
     options: Option[];
     onChange: (value: Option | null) => void; 
     onInputChange?: (inputValue: string) => void; 
@@ -12,7 +13,7 @@ type AutocompleteProps = {
 }
 
 
-function Autocomplete({label, options, onChange, onInputChange, disabled}: AutocompleteProps) {
+function Autocomplete({label, description, options, onChange, onInputChange, disabled}: AutocompleteProps) {
     const [showOptions, setShowOptions] = useState<boolean>(false);
     const [inputValue, setInputValue] = useState<string>('');
     
@@ -123,20 +124,24 @@ function Autocomplete({label, options, onChange, onInputChange, disabled}: Autoc
                     onKeyDown={handleKeys}
                     />
                 <button onClick={clear}> x </button>
-            </div>
+                </div>
             {showOptions && 
                 <ul ref={optionsRef} 
                     className="autocomplete-options">
-                    {filteredOptions.map((option, index) => (
+                    {filteredOptions.length === 0 ? (
+                        <li> No such continent found </li>
+                    ) : (
+                    filteredOptions.map((option, index) => (
                         <li 
                             key={option} 
                             onClick={()=> handleOptionClick(option)}
                             className={`autocomplete-option ${highlightedID === index ? 'highlighted' : ''}`}>
                             {option}
                         </li>
-                    ))}
+                    )))}
                 </ul>
             }
+            <p>{description}</p>
         </div>
     )
 }
