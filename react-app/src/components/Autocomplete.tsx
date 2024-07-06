@@ -63,6 +63,7 @@ function Autocomplete({label, options, onChange, onInputChange, disabled}: Autoc
             //close options when click anywhere else
             setShowOptions(false);
           }
+        resetID();
         };
     React.useEffect(() => {
         document.addEventListener('mousedown', handleOutsideClick);
