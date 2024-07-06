@@ -122,7 +122,7 @@ function Autocomplete({label, options, onChange, onInputChange, disabled}: Autoc
                     ref={inputRef}
                     onKeyDown={handleKeys}
                     />
-                <button onClick={clear}> X </button>
+                <button onClick={clear}> x </button>
             </div>
             {showOptions && 
                 <ul ref={optionsRef} 
