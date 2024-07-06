@@ -1,4 +1,5 @@
 import React, { ChangeEvent, useRef, useState } from "react";
+import './Autocomplete.css';
 
 type Option = string;
 
@@ -14,6 +15,7 @@ type AutocompleteProps = {
 function Autocomplete({label, options, onChange, onInputChange, disabled}: AutocompleteProps) {
     const [showOptions, setShowOptions] = useState<boolean>(false);
     const [inputValue, setInputValue] = useState<string>('');
+    
 
     //show options upon clicking on input
     function handleInputClick() {
@@ -22,11 +24,19 @@ function Autocomplete({label, options, onChange, onInputChange, disabled}: Autoc
 
     //for mouse event ie clicking outside
     const inputRef = useRef<HTMLInputElement>(null);
+    const optionsRef = useRef<HTMLUListElement>(null);
     function handleOutsideClick(event: MouseEvent) {
-        if (inputRef.current && !inputRef.current.contains(event.target as Node)) {
+        if (inputRef.current && inputRef.current.contains(event.target as Node)) {
+            //keep options open when click on input
+            setShowOptions(true);
+          } else if (optionsRef.current && optionsRef.current.contains(event.target as Node)) {
+            //keep options open when click on option
+            setShowOptions(true);
+          } else {
+            //close options when click anywhere else
             setShowOptions(false);
           }
-    };
+        };
     React.useEffect(() => {
         document.addEventListener('mousedown', handleOutsideClick);
         return () => { document.removeEventListener('mousedown', handleOutsideClick);}
@@ -52,10 +62,10 @@ function Autocomplete({label, options, onChange, onInputChange, disabled}: Autoc
 
     function handleOptionClick(option: Option) {
         if (disabled) { return;}
-        setSelectedOption(option); //keeps track of current option being chosen
+        setSelectedOption(option);
         onChange(option);
         setInputValue(option);
-        setShowOptions(false);
+        setShowOptions(true);
     };
     //when option is clicked, input value will be updated to it
 
@@ -69,9 +79,10 @@ function Autocomplete({label, options, onChange, onInputChange, disabled}: Autoc
     };
     
     return (
-        <div>           
-            <label>{label}</label>
+        <div className="autocomplete-container">           
+            <label className="autocomplete-label">{label}</label>
             <input
+            className="autocomplete-input"
             type="text"
             value={inputValue}
             onChange={handleInputChange}
@@ -82,9 +93,14 @@ function Autocomplete({label, options, onChange, onInputChange, disabled}: Autoc
             />
             <button onClick={clear}> X </button>
             {showOptions && 
-                <ul>
+                <ul 
+                    ref={optionsRef} 
+                    className="autocomplete-options">
                     {filteredOptions.map(option => (
-                        <li key={option} onClick={()=> handleOptionClick(option)}>
+                        <li 
+                            key={option} 
+                            onClick={()=> handleOptionClick(option)}
+                            className="autocomplete-option">
                             {option}
                         </li>
                     ))}
